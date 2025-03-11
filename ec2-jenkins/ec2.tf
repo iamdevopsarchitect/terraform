@@ -4,7 +4,7 @@ resource "aws_instance" "terraform" {
     instance_type = var.environment == "master" ? "t3.small" : "t3.micro"
     vpc_security_group_ids = [aws_security_group.allow_ssh_terraform.id]
     tags = {
-        Name = "terraform"
+        Name = "jenkins-agent"
     }
     connection {
         type    = "ssh"
@@ -15,18 +15,20 @@ resource "aws_instance" "terraform" {
     # provisioners will execute at the time of creation of rsources
     provisioner "remote-exec" {
         inline = [
-            "sudo curl -o /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo",
-            "sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key",
-            "sudo yum install fontconfig java-17-openjdk -y",
-            "sudo yum install jenkins -y",
-            "sudo systemctl start jenkins",
-            "sudo systemctl enable jenkins"
+            # "sudo curl -o /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo",
+            # "sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key",
+            # "sudo yum install fontconfig java-17-openjdk -y",
+            # "sudo yum install jenkins -y",
+            # "sudo systemctl start jenkins",
+            # "sudo systemctl enable jenkins"
+            "sudo yum install java-17-openjdk -y"
         ]
     }
     provisioner "remote-exec" {
         when = destroy
         inline = [
-            "sudo systemctl stop jenkins"
+            # "sudo systemctl stop jenkins"
+            "echo shutting down"
         ]
     }    
 }
