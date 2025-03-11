@@ -27,7 +27,7 @@ resource "aws_instance" "jenkins" {
 }
 
 resource "aws_security_group" "allow_ssh_terraform" {
-    name        = "allow_sshh" # allow_ssh is already there in my account
+    name        = "allow_sshhh" # allow_ssh is already there in my account
     description = "Allow port number 22 for SSH access"
 
     # usually we allow everything in egress
@@ -48,6 +48,6 @@ resource "aws_security_group" "allow_ssh_terraform" {
     }
 
     tags = {
-        Name = "allow_sshh"
+        Name = "allow_sshhh"
     }
 }
