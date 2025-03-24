@@ -1,3 +1,3 @@
 variable "environment" {
-    default = "master"
+    default = "Jenkins-master"
 }
