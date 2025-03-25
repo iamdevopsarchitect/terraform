@@ -56,8 +56,8 @@ resource "aws_instance" "jenkins-agent" {
             "sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo",
             "sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y",
             "sudo usermod -aG docker ec2-user",
-            "sudo systemctl start docker",
-            "sudo systemctl status docker"
+            "sudo systemctl start docker"
+            
 
         ]
     }
