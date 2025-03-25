@@ -1,4 +1,4 @@
-resource "aws_instance" "jenkins" {
+resource "aws_instance" "jenkins-master" {
     
     ami = "ami-09c813fb71547fc4f" # left side and right side need not to be same
     instance_type =  "t3.small" 
@@ -27,6 +27,45 @@ resource "aws_instance" "jenkins" {
         when = destroy
         inline = [
             "sudo systemctl stop jenkins"
+        ]
+    }    
+}
+
+resource "aws_instance" "jenkins-agent" {
+    
+    ami = "ami-09c813fb71547fc4f" # left side and right side need not to be same
+    instance_type =  "t3.small" 
+    vpc_security_group_ids = [aws_security_group.allow_ssh_terraform.id]
+    tags = {
+        Name = "agent"
+    }
+    connection {
+        type    = "ssh"
+        user    = "ec2-user"
+        password = "DevOps321"
+        host    = self.public_ip
+    }
+    # provisioners will execute at the time of creation of rsources
+    provisioner "remote-exec" {
+        inline = [
+            "sudo yum install java-17-openjdk -y",
+            "sudo dnf module disable nodejs -y",
+            "sudo dnf module enable nodejs:20 -y",
+            "sudo dnf install nodejs -y",
+            "sudo dnf -y install dnf-plugins-core",
+            "sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo",
+            "sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y",
+            "sudo usermod -aG docker ec2-user",
+            "sudo systemctl start docker",
+            "sudo systemctl status docker"
+
+        ]
+    }
+    provisioner "remote-exec" {
+        when = destroy
+        inline = [
+            "echo shutting down server",
+            "sudo systemctl stop docker"
         ]
     }    
 }
